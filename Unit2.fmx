@@ -3,18 +3,72 @@ object Form2: TForm2
   Top = 0
   Caption = 'Form2'
   ClientHeight = 480
-  ClientWidth = 640
+  ClientWidth = 423
   FormFactor.Width = 320
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
   DesignerMasterStyle = 3
-  object Button1: TButton
-    Position.X = 160.000000000000000000
-    Position.Y = 184.000000000000000000
-    Size.Width = 121.000000000000000000
-    Size.Height = 65.000000000000000000
+  object Layout1: TLayout
+    Align = Top
+    Size.Width = 423.000000000000000000
+    Size.Height = 33.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 1
-    Text = 'Button1'
+    object Rectangle1: TRectangle
+      Align = Client
+      Fill.Color = claAqua
+      Size.Width = 423.000000000000000000
+      Size.Height = 33.000000000000000000
+      Size.PlatformDefault = False
+    end
+    object Label1: TLabel
+      Align = Center
+      TextSettings.HorzAlign = Center
+      Text = 'WORDS'
+      TabOrder = 1
+    end
+  end
+  object Layout2: TLayout
+    Align = Top
+    Position.Y = 33.000000000000000000
+    Size.Width = 423.000000000000000000
+    Size.Height = 32.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 3
+    object Label2: TLabel
+      Align = Left
+      Margins.Left = 9.000000000000000000
+      Position.X = 9.000000000000000000
+      Size.Width = 82.000000000000000000
+      Size.Height = 32.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'Letters ->'
+      TabOrder = 0
+    end
+    object Button1: TButton
+      Align = Right
+      Margins.Right = 9.000000000000000000
+      Position.X = 341.000000000000000000
+      Size.Width = 73.000000000000000000
+      Size.Height = 32.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      Text = 'GO'
+    end
+    object Rectangle2: TRectangle
+      Fill.Color = claWhite
+      Position.X = 88.000000000000000000
+      Size.Width = 201.000000000000000000
+      Size.Height = 33.000000000000000000
+      Size.PlatformDefault = False
+      object Edit1: TEdit
+        Touch.InteractiveGestures = [LongTap, DoubleTap]
+        Align = Client
+        TabOrder = 0
+        Size.Width = 201.000000000000000000
+        Size.Height = 32.000000000000000000
+        Size.PlatformDefault = False
+      end
+    end
   end
 end

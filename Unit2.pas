@@ -5,11 +5,18 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs,
-  FMX.Controls.Presentation, FMX.StdCtrls;
+  FMX.Controls.Presentation, FMX.StdCtrls, FMX.Layouts, FMX.Objects, FMX.Edit;
 
 type
   TForm2 = class(TForm)
+    Layout1: TLayout;
+    Rectangle1: TRectangle;
+    Label1: TLabel;
+    Layout2: TLayout;
+    Label2: TLabel;
     Button1: TButton;
+    Rectangle2: TRectangle;
+    Edit1: TEdit;
     procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
