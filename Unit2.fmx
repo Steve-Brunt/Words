@@ -34,7 +34,7 @@ object Form2: TForm2
     Size.Width = 423.000000000000000000
     Size.Height = 32.000000000000000000
     Size.PlatformDefault = False
-    TabOrder = 3
+    TabOrder = 2
     object Label2: TLabel
       Align = Left
       Margins.Left = 9.000000000000000000
@@ -54,6 +54,7 @@ object Form2: TForm2
       Size.PlatformDefault = False
       TabOrder = 1
       Text = 'GO'
+      OnClick = Button1Click
     end
     object Rectangle2: TRectangle
       Fill.Color = claWhite
@@ -69,6 +70,32 @@ object Form2: TForm2
         Size.Height = 32.000000000000000000
         Size.PlatformDefault = False
       end
+    end
+  end
+  object Layout3: TLayout
+    Align = Client
+    Padding.Top = 9.000000000000000000
+    Size.Width = 423.000000000000000000
+    Size.Height = 415.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 3
+    object Rectangle3: TRectangle
+      Fill.Color = claGreenyellow
+      Position.Y = 1.000000000000000000
+      Size.Width = 423.000000000000000000
+      Size.Height = 8.000000000000000000
+      Size.PlatformDefault = False
+    end
+    object Memo1: TMemo
+      Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+      DataDetectorTypes = []
+      Align = Client
+      Size.Width = 423.000000000000000000
+      Size.Height = 406.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      Viewport.Width = 415.000000000000000000
+      Viewport.Height = 398.000000000000000000
     end
   end
 end

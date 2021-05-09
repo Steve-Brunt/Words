@@ -10,8 +10,28 @@ inherited Form2_LgXhdpiPh: TForm2_LgXhdpiPh
   end
   inherited Layout2: TLayout
     Size.Width = 450.000000000000000000
+    inherited Button1: TButton
+      Position.X = 368.000000000000000000
+    end
     inherited Rectangle2: TRectangle
-      Position.Y = 8.000000000000000000
+      Position.X = 90.000000000000000000
+      Size.Width = 180.000000000000000000
+      inherited Edit1: TEdit
+        Size.Width = 180.000000000000000000
+      end
+    end
+  end
+  inherited Layout3: TLayout
+    Size.Width = 450.000000000000000000
+    Size.Height = 630.000000000000000000
+    inherited Rectangle3: TRectangle
+      Size.Width = 450.000000000000000000
+    end
+    inherited Memo1: TMemo
+      Size.Width = 450.000000000000000000
+      Size.Height = 621.000000000000000000
+      Viewport.Width = 450.000000000000000000
+      Viewport.Height = 621.000000000000000000
     end
   end
 end
