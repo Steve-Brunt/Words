@@ -22,23 +22,199 @@ type
     Rectangle3: TRectangle;
     Memo1: TMemo;
     procedure Button1Click(Sender: TObject);
+    procedure LoadDictClick(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
   end;
+  TSortedWordIndex = record SortedAnagram: UTF8string; Index: array[0..7] of integer; end;  //max 7 anagrm
 
 var
   Form2: TForm2;
+  StringDict:TStringList;              //declare dictionary
+  SortedWordIndices: array[0..68455] of TSortedWordIndex;  // sorted anagrams  was 74462
+  // if this is declared within procedure it becomes 'local' and causes stack overflow
 
 implementation
+  uses System.IOUtils;      //placed here (for GetDocumentsName) to avoid clash with TRectangle
 
 {$R *.fmx}
 {$R *.LgXhdpiPh.fmx ANDROID}
 
-procedure TForm2.Button1Click(Sender: TObject);
+//procedure TForm2.Button1Click(Sender: TObject);
+//begin
+//ShowMessage('Hello World');
+//end;
+
+procedure mysort(ByteArray: TBytes);
+var i, j, min, temp: integer;
 begin
-ShowMessage('Hello World');
+for i:=Low(ByteArray) to High(ByteArray) do
+   begin
+   min:=i;
+   for j:=i+1 to High(ByteArray) do
+   if ByteArray[j] < ByteArray[min] then min:=j;
+   temp:=ByteArray[min]; ByteArray[min]:=ByteArray[i]; ByteArray[i]:=temp
+   end ;
+end ;
+
+function ValidWord(s_in:string; var Index:integer):boolean;
+{string parameter is upto 15 chars long,
+ extend to 15 chars with spaces and then do binary chop against Words array}
+var
+start, middle, endpos, I:integer;
+state:(chopping, foundatendpos, foundatmiddle, givenup);
+Words: array of string;                                           //TEMPORARY
+begin
+for I:= 15-length(s_in) downto 1 do s_in:= s_in + ' ';
+ValidWord:=False;    {this is probably redundant, see last line of code}
+start:=1; endpos:=68455; state:=chopping;
+repeat
+  if (endpos = start) or (start > endpos) then
+    case SortedWordIndices[endpos].SortedAnagram = s_in of
+      true : state:= foundatendpos;
+      false: state:=givenup
+    end { case}     else
+    begin
+      middle:= (endpos+start) div 2;
+      if s_in < SortedWordIndices[middle].SortedAnagram then endpos:= middle-1 else
+        if s_in > SortedWordIndices[middle].SortedAnagram then
+          start:= middle + 1
+        else state:= foundatmiddle
+    end
+until state <> chopping;
+if state=foundatmiddle then Index:=middle
+ else Index:= endpos;
+
+ValidWord:=state in [foundatendpos,foundatmiddle];
+end;
+
+procedure TForm2.Button1Click(Sender: TObject);
+var Input: string; Letters: UTF8String; Index:integer;
+ByteArray : Tbytes;   I:integer;
+begin
+if Form2.Edit1.Text = '' then
+ begin Memo1.Lines.Clear; Memo1.Lines.Add('Enter text in letters box ') end
+else
+begin
+  Input:=Lowercase(Form2.Edit1.Text);   // get rid of uppercase first character
+  Input:=TrimLeft(Input);               //trim any leading spaces
+  Input:=TrimRight(Input);             // remove any trailing spaces from Android keyboard
+  ByteArray:=TEncoding.UTF8.GetBytes(Input);
+  mysort(ByteArray);                         // sort letters for Anagram list
+  Letters:= TEncoding.UTF8.GetString(ByteArray);  // convert to string
+//  ShowMessage(Letters);
+  Memo1.Lines.Clear;
+  if ValidWord(Letters,Index) then    // output as many amagrams as exist
+  begin
+    I:=0;   // first 'anagram' always exists
+    repeat
+      Memo1.Lines.Add(StringDict[SortedWordIndices[Index].Index[I]]);
+      I:=I+1;
+    until (I=8) or (SortedWordIndices[Index].Index[I]=0);
+  end
+  else Memo1.Lines.Add('No anagrams found');
+//   Memo1.Lines.Add(StringDict[SortedWordIndices[Index].Index[0]]);
+
+end;
+end;
+
+procedure TForm2.LoadDictClick(Sender: TObject);
+const MaxWordLen: Integer = 15;
+var
+Filepath, SWord,OldWord :UTF8String;    //was utf8string
+StreamFile : TFileStream;    AnaFile: TextFile;
+Ch:byte;
+ByteArray : TBytes;
+Stch,SortedS,Value : UTF8String;
+I,J,NoofWords,CharPos,Index,Number,DictWordIndex: integer;
+WordLen: byte;   //8 bit unsigned integer
+Row, IndexPos: integer;
+
+begin   // Determine filepath for dictionary.dct file
+     {$IFDEF ANDROID}
+        FilePath:= Tpath.GetDocumentsPath + PathDelim + 'Dictionary.dct';
+     {$ENDIF}
+     {$IFDEF WIN32}
+        FilePath:= 'Dictionary.dct';
+     {$ENDIF}
+    StreamFile:=TFileStream.Create(Filepath, fmOpenRead);
+    NoofWords:= 74741 + 1; // I added 'a' to Dictionary to avoid binary chop prob.74400 words loaded
+
+    StringDict:=TStringList.Create;  //stringlist to hold all the dictionary words
+
+           Index:=1; Number:=0;
+
+  try      // Read desired words from Dictionary.dct into stringlist
+  begin
+    For I:= 1 to 6 do StreamFile.ReadBuffer(Ch,1);      // discard 6 header bytes in dictionary.
+    for I := 1 to NoofWords do //NoofWords do
+      begin
+      StreamFile.ReadBuffer(Ch,1); //read length of next word
+      WordLen:=Ch;
+      if WordLen <= MaxWordLen then
+        begin
+        SetLength(ByteArray,WordLen);
+        StreamFile.ReadBuffer(ByteArray,WordLen);      // read next word into bytearray buffer
+        Stch:= TEncoding.UTF8.GetString(ByteArray);      // convert to string
+        StringDict.Add(Stch);                          // add to StringList
+//        mysort(ByteArray);                         // sort letters for Anagram list        | NOT
+//        SortedS:= TEncoding.UTF8.GetString(ByteArray);  // convert to string               | NEEDED
+        Index:=Index+1;                                                                //  | YET
+        end
+        else For CharPos :=1 to WordLen do StreamFile.ReadBuffer(Ch,1);// discard word as it's too big
+      end;
+  end;
+  finally
+    StreamFile.Free; // ShowMessage(InttoStr(Number));
+  end;
+  Memo1.Lines.Add('Dictionary V1.0 Loaded ok');
+//  Memo1.Lines.Add(StringDict[74400]);                   // to check can read from StringList on Android.
+
+// Read Anagram sorted list into 15 char space filled array.
+// File format is sorted word, number of chars in word, index into dictionary.dct
+// Reading from text file 3 items per line, space delimited, so use readln.
+{$IFDEF ANDROID}
+ FilePath:= Tpath.GetDocumentsPath + PathDelim + 'WordsSorted.txt';
+{$ENDIF}
+{$IFDEF WIN32}
+ FilePath:= 'WordsSorted.txt';
+{$ENDIF}
+    AssignFile(AnaFile,FilePath); Reset(AnaFile);         //move this under the TRY???
+
+  try
+    begin
+      Row:=-1; IndexPos:=0; OldWord:=' ';
+     repeat
+      readln(Anafile,WordLen,DictWordIndex,SWord);  // SEEM TO HAVE LEADING SPACE ON SWORD
+      {$IFDEF WIN32}
+      SWord:=TrimLeft(SWord);     //remove leading space
+      {$ENDIF}
+      {$IFDEF ANDROID}
+        Sword:=TrimLeft(SWord);
+      {$ENDIF}
+      for I:=15 - Length(SWord) downto 1 do SWord:=SWord + ' ';       // spacefill to 15 chars
+
+      if SWord = OldWord then //we have an anagram
+      begin
+        IndexPos:=IndexPos + 1; // stay on same row, slot in new index ref to Dict StringList
+        SortedWordIndices[Row].Index[IndexPos]:=DictWordIndex;
+      end
+      else  // move down a row  in Table of Anagrams & Indices
+      begin
+        IndexPos:=0;  Row:=Row+1;
+        SortedWordIndices[Row].SortedAnagram:=SWord;   //what about space filling to 15?
+        SortedWordIndices[Row].Index[IndexPos]:=DictWordIndex;
+        OldWord:=SWord;  //ShowMessage(InttoStr(Length(SWord)) + ' |' +SWord +'|');
+      end;
+      until eof(Anafile);
+    end;
+  finally
+    CloseFile(AnaFile);
+  end;
+//  ShowMessage('Number of rows ' + InttoStr(Row));
+
 end;
 
 end.
