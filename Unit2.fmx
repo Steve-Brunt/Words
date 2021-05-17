@@ -8,7 +8,7 @@ object Form2: TForm2
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
   OnCreate = LoadDictClick
-  DesignerMasterStyle = 3
+  DesignerMasterStyle = 0
   object Layout1: TLayout
     Align = Top
     Size.Width = 423.000000000000000000
@@ -68,7 +68,7 @@ object Form2: TForm2
         Align = Client
         TabOrder = 0
         Size.Width = 201.000000000000000000
-        Size.Height = 32.000000000000000000
+        Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
       end
     end
@@ -95,8 +95,8 @@ object Form2: TForm2
       Size.Height = 406.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
-      Viewport.Width = 415.000000000000000000
-      Viewport.Height = 398.000000000000000000
+      Viewport.Width = 419.000000000000000000
+      Viewport.Height = 402.000000000000000000
     end
   end
 end

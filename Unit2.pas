@@ -23,6 +23,7 @@ type
     Memo1: TMemo;
     procedure Button1Click(Sender: TObject);
     procedure LoadDictClick(Sender: TObject);
+
   private
     { Private declarations }
   public
@@ -46,6 +47,56 @@ implementation
 //begin
 //ShowMessage('Hello World');
 //end;
+function ValidWord(s_in:string; var Index:integer):boolean;    forward;
+
+procedure Try3LtrWords(Letters :string);
+var i,j,k,width,Charwidth,Index,h,LineNum :integer; Temp, Wurds, StLetters :string;
+Words :TStringlist; x:single;
+begin
+charwidth:=40;  Temp:=''; Wurds:='';
+StLetters:=Letters;
+Form2.Memo1.TextSettings.WordWrap:= True; //keep all 3 letter words on one line with wrap
+LineNum:= Form2.Memo1.Lines.Add(' ');     // create a new line and obtain Line Number
+// ----------------------- 3 letter word subsets -------------------------------
+i:=Low(StLetters);             // 1 based string on Windows, 0 on Android
+  repeat
+  begin
+  j:=i+1; repeat
+          begin
+            k:=j+1; repeat
+                    begin
+                    Temp:= StLetters[i]+StLetters[j]+StLetters[k];
+                    //if (length(Temp) + length(Wurds)) >= Charwidth then
+                    // begin
+                    // Form2.Memo1.Lines.Append(Wurds); Wurds:=Temp;  {output words }
+                    // end
+                    //else Wurds:= Wurds +' ' + Temp;
+                    if ValidWord(Temp,Index) then    // output as many amagrams as exist
+                      begin
+                        h:=0;   // first 'anagram' always exists
+                        repeat
+        //Memo1.Lines.Add(StringDict[SortedWordIndices[Index].Index[I]]);
+                        if h=0  then
+                          Wurds:=StringDict[SortedWordIndices[Index].Index[h]] +' ' //  I/p to Try3 is sorted word, discard that keep anagram
+                        else Wurds:=Wurds + StringDict[SortedWordIndices[Index].Index[h]] +' ';  // bundle all anagrams onto one line
+                        h:=h+1;
+                        until (h=8) or (SortedWordIndices[Index].Index[h]=0);
+                       //Form2.Memo1.Lines.Append(Wurds);
+                        Form2.Memo1.Lines[LineNum]:= Form2.Memo1.Lines[LineNum] + Wurds;
+                      end;
+
+                    end;
+                    inc(k);
+                    until k > High(StLetters);
+          end; inc(j);
+          until j > High(StLetters)-1;
+  end; inc(i);
+  until i > High(StLetters)-2;
+//  if Wurds <> '' then Form2.Memo1.Lines.Append(Wurds);
+// ---------------------- endof 3 letter word subsets --------------------------
+//Form2.Memo1.Lines.Add(Temp);
+end;
+
 
 procedure mysort(ByteArray: TBytes);
 var i, j, min, temp: integer;
@@ -91,34 +142,42 @@ ValidWord:=state in [foundatendpos,foundatmiddle];
 end;
 
 procedure TForm2.Button1Click(Sender: TObject);
-var Input: string; Letters: UTF8String; Index:integer;
+var Input: string; Temp, Letters: UTF8String; Index:integer;
 ByteArray : Tbytes;   I:integer;
 begin
-if Form2.Edit1.Text = '' then
- begin Memo1.Lines.Clear; Memo1.Lines.Add('Enter text in letters box ') end
-else
-begin
-  Input:=Lowercase(Form2.Edit1.Text);   // get rid of uppercase first character
-  Input:=TrimLeft(Input);               //trim any leading spaces
-  Input:=TrimRight(Input);             // remove any trailing spaces from Android keyboard
-  ByteArray:=TEncoding.UTF8.GetBytes(Input);
-  mysort(ByteArray);                         // sort letters for Anagram list
-  Letters:= TEncoding.UTF8.GetString(ByteArray);  // convert to string
-//  ShowMessage(Letters);
-  Memo1.Lines.Clear;
-  if ValidWord(Letters,Index) then    // output as many amagrams as exist
+  if Form2.Edit1.Text = '' then
+   begin Memo1.Lines.Clear; Memo1.Lines.Add('Enter text in letters box ') end
+  else if Length(Form2.Edit1.Text) > 15 then
+    begin Memo1.Lines.Clear; Memo1.Lines.Add('Letters max number is 15 ') end
+  else
   begin
-    I:=0;   // first 'anagram' always exists
-    repeat
-      Memo1.Lines.Add(StringDict[SortedWordIndices[Index].Index[I]]);
-      I:=I+1;
-    until (I=8) or (SortedWordIndices[Index].Index[I]=0);
-  end
-  else Memo1.Lines.Add('No anagrams found');
+    Input:=Lowercase(Form2.Edit1.Text);   // get rid of uppercase first character
+    Input:=TrimLeft(Input);               //trim any leading spaces
+    Input:=TrimRight(Input);             // remove any trailing spaces from Android keyboard
+    ByteArray:=TEncoding.UTF8.GetBytes(Input);
+    mysort(ByteArray);                         // sort letters for Anagram list
+    Letters:= TEncoding.UTF8.GetString(ByteArray);  // convert to string
+//  ShowMessage(Letters);
+    Memo1.Lines.Clear;  Temp:='';
+    if ValidWord(Letters,Index) then    // output as many amagrams as exist
+    begin
+      I:=0;   // first 'anagram' always exists
+      repeat
+        //Memo1.Lines.Add(StringDict[SortedWordIndices[Index].Index[I]]);
+        Temp:=Temp + StringDict[SortedWordIndices[Index].Index[I]] +' ';       // bundle all anagrams onto one line
+        I:=I+1;
+      until (I=8) or (SortedWordIndices[Index].Index[I]=0);
+      Memo1.Lines.Add(Temp);
+    end
+    else Memo1.Lines.Add('No anagrams found');
 //   Memo1.Lines.Add(StringDict[SortedWordIndices[Index].Index[0]]);
 
-end;
-end;
+    // Now process all the possible subset combinations
+    if Length(Form2.Edit1.Text) > 3 then Try3LtrWords(Letters);
+
+  end;
+
+  end;
 
 procedure TForm2.LoadDictClick(Sender: TObject);
 const MaxWordLen: Integer = 15;
