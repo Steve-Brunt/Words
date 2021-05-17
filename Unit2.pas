@@ -50,10 +50,10 @@ implementation
 function ValidWord(s_in:string; var Index:integer):boolean;    forward;
 
 procedure Try3LtrWords(Letters :string);
-var i,j,k,width,Charwidth,Index,h,LineNum :integer; Temp, Wurds, StLetters :string;
-Words :TStringlist; x:single;
+var i,j,k,Index,h,LineNum :integer; Temp, Wurds, StLetters :string;
+
 begin
-charwidth:=40;  Temp:=''; Wurds:='';
+Temp:=''; Wurds:='';
 StLetters:=Letters;
 Form2.Memo1.TextSettings.WordWrap:= True; //keep all 3 letter words on one line with wrap
 LineNum:= Form2.Memo1.Lines.Add(' ');     // create a new line and obtain Line Number
@@ -66,25 +66,17 @@ i:=Low(StLetters);             // 1 based string on Windows, 0 on Android
             k:=j+1; repeat
                     begin
                     Temp:= StLetters[i]+StLetters[j]+StLetters[k];
-                    //if (length(Temp) + length(Wurds)) >= Charwidth then
-                    // begin
-                    // Form2.Memo1.Lines.Append(Wurds); Wurds:=Temp;  {output words }
-                    // end
-                    //else Wurds:= Wurds +' ' + Temp;
                     if ValidWord(Temp,Index) then    // output as many amagrams as exist
                       begin
                         h:=0;   // first 'anagram' always exists
                         repeat
-        //Memo1.Lines.Add(StringDict[SortedWordIndices[Index].Index[I]]);
-                        if h=0  then
-                          Wurds:=StringDict[SortedWordIndices[Index].Index[h]] +' ' //  I/p to Try3 is sorted word, discard that keep anagram
-                        else Wurds:=Wurds + StringDict[SortedWordIndices[Index].Index[h]] +' ';  // bundle all anagrams onto one line
-                        h:=h+1;
+                         Wurds:=StringDict[SortedWordIndices[Index].Index[h]] +' ';
+                         // next line of code is to not enter duplicates that arise from repeated characters
+                         if Form2.Memo1.Lines[LineNum].IndexOf(Wurds) = -1  then // not in StringList so add the Wurds
+                          Form2.Memo1.Lines[LineNum]:= Form2.Memo1.Lines[LineNum] + Wurds;  // keep all Wurds on same line
+                         h:=h+1;
                         until (h=8) or (SortedWordIndices[Index].Index[h]=0);
-                       //Form2.Memo1.Lines.Append(Wurds);
-                        Form2.Memo1.Lines[LineNum]:= Form2.Memo1.Lines[LineNum] + Wurds;
-                      end;
-
+                       end;
                     end;
                     inc(k);
                     until k > High(StLetters);
@@ -92,9 +84,7 @@ i:=Low(StLetters);             // 1 based string on Windows, 0 on Android
           until j > High(StLetters)-1;
   end; inc(i);
   until i > High(StLetters)-2;
-//  if Wurds <> '' then Form2.Memo1.Lines.Append(Wurds);
 // ---------------------- endof 3 letter word subsets --------------------------
-//Form2.Memo1.Lines.Add(Temp);
 end;
 
 
@@ -116,7 +106,7 @@ function ValidWord(s_in:string; var Index:integer):boolean;
 var
 start, middle, endpos, I:integer;
 state:(chopping, foundatendpos, foundatmiddle, givenup);
-Words: array of string;                                           //TEMPORARY
+//Words: array of string;                                           //TEMPORARY
 begin
 for I:= 15-length(s_in) downto 1 do s_in:= s_in + ' ';
 ValidWord:=False;    {this is probably redundant, see last line of code}

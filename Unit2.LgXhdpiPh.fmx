@@ -18,7 +18,6 @@ inherited Form2_LgXhdpiPh: TForm2_LgXhdpiPh
       Size.Width = 180.000000000000000000
       inherited Edit1: TEdit
         Size.Width = 180.000000000000000000
-        Size.Height = 32.000000000000000000
       end
     end
   end
