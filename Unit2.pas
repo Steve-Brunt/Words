@@ -87,6 +87,242 @@ i:=Low(StLetters);             // 1 based string on Windows, 0 on Android
 // ---------------------- endof 3 letter word subsets --------------------------
 end;
 
+procedure Try4LtrWords(Letters:string);
+var  i,j,k,l,Index,h,LineNum :integer; Temp, Wurds, StLetters :string;
+begin
+Temp:=''; Wurds:='';
+StLetters:=Letters;
+Form2.Memo1.TextSettings.WordWrap:= True; //keep all 3 letter words on one line with wrap
+LineNum:= Form2.Memo1.Lines.Add(' ');     // create a new line and obtain Line Number
+// ----------------------- 4 letter word subsets -------------------------------
+i:=Low(StLetters);
+  repeat
+  begin
+  j:=i+1; repeat
+           begin
+            k:=j+1; repeat
+                     Begin
+                     l:=k+1;repeat
+                              begin
+                                Temp:= StLetters[i]+StLetters[j]+StLetters[k]+StLetters[l];
+                                if ValidWord(Temp,Index) then    // output as many amagrams as exist
+                                begin
+                                  h:=0;   // first 'anagram' always exists
+                                  repeat
+                                   Wurds:=StringDict[SortedWordIndices[Index].Index[h]] +' ';
+                                   // next line of code is to not enter duplicates that arise from repeated characters
+                                   if Form2.Memo1.Lines[LineNum].IndexOf(Wurds) = -1  then // not in StringList so add the Wurds
+                                   Form2.Memo1.Lines[LineNum]:= Form2.Memo1.Lines[LineNum] + Wurds;  // keep all Wurds on same line
+                                   h:=h+1;
+                                  until (h=8) or (SortedWordIndices[Index].Index[h]=0);
+                                end;
+                              end; inc(l);
+                            until l >High(StLetters);
+                     End; inc(k);
+                    until k > High(StLetters)-1;
+           end; inc(j);
+          until j > High(StLetters)-2;
+  end; inc(i);
+  until i > High(StLetters)-3;
+end;
+
+procedure Try5LtrWords(Letters:string);
+var  i,j,k,l,m,Index,h,LineNum :integer; Temp, Wurds, StLetters :string;
+begin
+Temp:=''; Wurds:='';
+StLetters:=Letters;
+Form2.Memo1.TextSettings.WordWrap:= True; //keep all 5 letter words on one line with wrap
+LineNum:= Form2.Memo1.Lines.Add(' ');     // create a new line and obtain Line Number
+// ----------------------- 5 letter word subsets -------------------------------
+i:=Low(StLetters);
+  repeat
+  begin
+  j:=i+1; repeat
+           begin
+            k:=j+1; repeat
+                     Begin
+                     l:=k+1;repeat
+                              begin
+                              m:=l+1; repeat
+                                      begin
+                                       Temp:= StLetters[i]+StLetters[j]+StLetters[k]+StLetters[l]+StLetters[m];
+                                       if ValidWord(Temp,Index) then    // output as many amagrams as exist
+                                       begin
+                                        h:=0;   // first 'anagram' always exists
+                                        repeat
+                                         Wurds:=StringDict[SortedWordIndices[Index].Index[h]] +' ';
+                                         // next line of code is to not enter duplicates that arise from repeated characters
+                                         if Form2.Memo1.Lines[LineNum].IndexOf(Wurds) = -1  then // not in StringList so add the Wurds
+                                         Form2.Memo1.Lines[LineNum]:= Form2.Memo1.Lines[LineNum] + Wurds;  // keep all Wurds on same line
+                                         h:=h+1;
+                                        until (h=8) or (SortedWordIndices[Index].Index[h]=0);
+                                       end; //inc(m);
+                                      end;  inc(m);
+                                      until m > High(StLetters);
+                              end; inc(l);
+                            until l >High(StLetters) -1;
+                     End; inc(k);
+                    until k > High(StLetters)-2;
+           end; inc(j);
+          until j > High(StLetters)-3;
+  end; inc(i);
+  until i > High(StLetters)-4;
+end;
+
+procedure Try6LtrWords(Letters:string);
+var  i,j,k,l,m,n,Index,h,LineNum :integer; Temp, Wurds, StLetters :string;
+begin
+Temp:=''; Wurds:='';
+StLetters:=Letters;
+Form2.Memo1.TextSettings.WordWrap:= True; //keep all 6 letter words on one line with wrap
+LineNum:= Form2.Memo1.Lines.Add(' ');     // create a new line and obtain Line Number
+// ----------------------- 6 letter word subsets -------------------------------
+i:=Low(StLetters);
+  repeat
+   begin
+  j:=i+1; repeat
+           begin
+            k:=j+1; repeat
+                     Begin
+                     l:=k+1;repeat
+                              begin
+                              m:=l+1; repeat
+                                       begin
+                                       n:=m+1; repeat
+                                                begin
+                                                Temp:= StLetters[i]+StLetters[j]+StLetters[k]+StLetters[l]+StLetters[m]+StLetters[n];
+                                                if ValidWord(Temp,Index) then    // output as many amagrams as exist
+                                                begin
+                                                h:=0;   // first 'anagram' always exists
+                                                repeat
+                                                 Wurds:=StringDict[SortedWordIndices[Index].Index[h]] +' ';
+                                                 // next line of code is to not enter duplicates that arise from repeated characters
+                                                 if Form2.Memo1.Lines[LineNum].IndexOf(Wurds) = -1  then // not in StringList so add the Wurds
+                                                 Form2.Memo1.Lines[LineNum]:= Form2.Memo1.Lines[LineNum] + Wurds;  // keep all Wurds on same line
+                                                 h:=h+1;
+                                                until (h=8) or (SortedWordIndices[Index].Index[h]=0);
+                                                 end; //inc(n);
+                                                end;  inc(n);
+                                                until n > High(StLetters);
+                                       end; inc(m);
+                                      until m > High(StLetters) -1;
+                              end; inc(l);
+                            until l >High(StLetters) -2;
+                     End; inc(k);
+                    until k > High(StLetters)-3;
+           end; inc(j);
+          until j > High(StLetters)-4;
+   end; inc(i);
+   until i > High(StLetters)-5;
+end;
+
+procedure Try7LtrWords(Letters:string);
+var  i,j,k,l,m,n,o,Index,h,LineNum :integer; Temp, Wurds, StLetters :string;
+begin
+Temp:=''; Wurds:='';
+StLetters:=Letters;
+Form2.Memo1.TextSettings.WordWrap:= True; //keep all 7 letter words on one line with wrap
+LineNum:= Form2.Memo1.Lines.Add(' ');     // create a new line and obtain Line Number
+// ----------------------- 7 letter word subsets -------------------------------
+i:=Low(StLetters);
+  repeat
+   begin
+   j:=i+1; repeat
+            begin
+            k:=j+1; repeat
+                     Begin
+                     l:=k+1;repeat
+                             begin
+                              m:=l+1;repeat
+                                      begin
+                                      n:=m+1;repeat
+                                              begin
+                                               o:=n+1;repeat
+                                                       begin
+
+                                                       Temp:= StLetters[i]+StLetters[j]+StLetters[k]+StLetters[l]+StLetters[m]+StLetters[n]+StLetters[o];
+                                                       if ValidWord(Temp,Index) then    // output as many amagrams as exist
+                                                       begin
+                                                       h:=0;   // first 'anagram' always exists
+                                                       repeat
+                                                       Wurds:=StringDict[SortedWordIndices[Index].Index[h]] +' ';
+                                                       // next line of code is to not enter duplicates that arise from repeated characters
+                                                       if Form2.Memo1.Lines[LineNum].IndexOf(Wurds) = -1  then // not in StringList so add the Wurds
+                                                       Form2.Memo1.Lines[LineNum]:= Form2.Memo1.Lines[LineNum] + Wurds;  // keep all Wurds on same line
+                                                       h:=h+1;
+                                                       until (h=8) or (SortedWordIndices[Index].Index[h]=0);
+                                                       end;
+                                                        end; inc(o);
+                                                       until o > High(StLetters);
+                                               end;  inc(n);
+                                             until n > High(StLetters) -1;
+                                       end; inc(m);
+                                      until m > High(StLetters) -2;
+                              end; inc(l);
+                            until l >High(StLetters) -3;
+                     End; inc(k);
+                    until k > High(StLetters)-4;
+           end; inc(j);
+          until j > High(StLetters)-5;
+   end; inc(i);
+  until i > High(StLetters)-6;
+end;
+
+procedure Try8LtrWords(Letters:string);
+var  i,j,k,l,m,n,o,p,Index,h,LineNum :integer; Temp, Wurds, StLetters :string;
+begin
+Temp:=''; Wurds:='';
+StLetters:=Letters;
+Form2.Memo1.TextSettings.WordWrap:= True; //keep all 8 letter words on one line with wrap
+LineNum:= Form2.Memo1.Lines.Add(' ');     // create a new line and obtain Line Number
+// ----------------------- 8 letter word subsets -------------------------------
+i:=Low(StLetters);
+  repeat
+   begin
+   j:=i+1; repeat
+            begin
+            k:=j+1; repeat
+                     Begin
+                     l:=k+1;repeat
+                             begin
+                              m:=l+1;repeat
+                                      begin
+                                      n:=m+1;repeat
+                                              begin
+                                               o:=n+1;repeat
+                                                       begin
+                                                       p:=o+1;repeat
+                                                               begin
+                                                                Temp:= StLetters[i]+StLetters[j]+StLetters[k]+StLetters[l]+StLetters[m]+StLetters[n]+StLetters[o]+StLetters[p];
+                                                                if ValidWord(Temp,Index) then    // output as many amagrams as exist
+                                                                begin
+                                                                h:=0;   // first 'anagram' always exists
+                                                                repeat
+                                                                Wurds:=StringDict[SortedWordIndices[Index].Index[h]] +' ';
+                                                                // next line of code is to not enter duplicates that arise from repeated characters
+                                                                if Form2.Memo1.Lines[LineNum].IndexOf(Wurds) = -1  then // not in StringList so add the Wurds
+                                                                Form2.Memo1.Lines[LineNum]:= Form2.Memo1.Lines[LineNum] + Wurds;  // keep all Wurds on same line
+                                                                h:=h+1;
+                                                                until (h=8) or (SortedWordIndices[Index].Index[h]=0);
+                                                                end;
+                                                               end; inc(p);
+                                                              until p> High(StLetters);
+                                                        end; inc(o);
+                                                       until o > High(StLetters) -1;
+                                               end;  inc(n);
+                                             until n > High(StLetters) -2;
+                                       end; inc(m);
+                                      until m > High(StLetters) -3;
+                              end; inc(l);
+                            until l >High(StLetters) -4;
+                     End; inc(k);
+                    until k > High(StLetters)-5;
+           end; inc(j);
+          until j > High(StLetters)-6;
+   end; inc(i);
+  until i > High(StLetters)-7;
+end;
+
 
 procedure mysort(ByteArray: TBytes);
 var i, j, min, temp: integer;
@@ -164,6 +400,11 @@ begin
 
     // Now process all the possible subset combinations
     if Length(Form2.Edit1.Text) > 3 then Try3LtrWords(Letters);
+    if Length(Form2.Edit1.Text) > 4 then  Try4LtrWords(Letters);
+    if Length(Form2.Edit1.Text) > 5 then  Try5LtrWords(Letters);
+    if Length(Form2.Edit1.Text) > 6 then  Try6LtrWords(Letters);
+    if Length(Form2.Edit1.Text) > 7 then  Try7LtrWords(Letters);
+    if Length(Form2.Edit1.Text) > 8 then  Try8LtrWords(Letters);
 
   end;
 
